@@ -1,0 +1,2 @@
+account_id,campaign_id,campaign_name,objective,status,effective_status,daily_budget,lifetime_budget,start_time,stop_time,source,dry_run,review_notes
+act_EXAMPLE_DO_NOT_USE,cmp_example_001,Sample Community Awareness,OUTCOME_AWARENESS,PAUSED,PAUSED,0,,2026-07-12,,local_example,true,Example data only. No Meta API request was made.

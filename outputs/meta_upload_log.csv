@@ -1,0 +1,5 @@
+item_id,object_type,operation,endpoint,meta_id,status,dry_run,rollback_notes,error
+approved-example-001,campaign,CREATE_PAUSED_DRAFT,/act_DRY_RUN_ACCOUNT/campaigns,,DRY_RUN_PREVIEW,true,No rollback needed. No Meta object was created.,
+approved-example-001,ad_set,CREATE_PAUSED_DRAFT,/act_DRY_RUN_ACCOUNT/adsets,,DRY_RUN_PREVIEW,true,No rollback needed. No Meta object was created.,
+approved-example-001,ad_creative,CREATE_PAUSED_DRAFT,/act_DRY_RUN_ACCOUNT/adcreatives,,DRY_RUN_PREVIEW,true,No rollback needed. No Meta object was created.,
+approved-example-001,ad,CREATE_PAUSED_DRAFT,/act_DRY_RUN_ACCOUNT/ads,,DRY_RUN_PREVIEW,true,No rollback needed. No Meta object was created.,

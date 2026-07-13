@@ -1,0 +1,9 @@
+# Secrets and real account data must never be committed.
+# Never commit Meta tokens, ad account IDs, customer lists, or real campaign exports.
+.env
+*.token
+credentials.json
+service-account.json
+outputs/private/
+__pycache__/
+*.pyc

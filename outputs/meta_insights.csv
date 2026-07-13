@@ -1,0 +1,2 @@
+account_id,date_start,date_stop,campaign_id,campaign_name,adset_id,adset_name,ad_id,ad_name,impressions,reach,clicks,spend,ctr,cpc,cpm,frequency,leads,conversions,source,dry_run,review_notes
+act_EXAMPLE_DO_NOT_USE,2026-07-12,2026-07-12,cmp_example_001,Sample Community Awareness,adset_example_001,Malaysia broad interest dry run,ad_example_001,Example Brand safe awareness draft,0,0,0,0.00,0,0,0,0,0,0,local_example,true,Example data only. No Meta API request was made.

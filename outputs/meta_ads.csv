@@ -1,0 +1,2 @@
+account_id,campaign_id,adset_id,ad_id,ad_name,platform,placement,status,effective_status,primary_text,headline,description,CTA,landing_page,source,dry_run,review_notes
+act_EXAMPLE_DO_NOT_USE,cmp_example_001,adset_example_001,ad_example_001,Example Brand safe awareness draft,Facebook,Feed,PAUSED,PAUSED,Explore weekly wellness community events with Example Brand.,Weekly wellness community event,Example local account snapshot only.,Learn More,https://example.com,local_example,true,Example data only. No Meta API request was made.

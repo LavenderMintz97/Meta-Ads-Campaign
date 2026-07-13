@@ -1,0 +1,68 @@
+{
+  "account_id": "act_EXAMPLE_DO_NOT_USE",
+  "account_name": "Example Meta Ad Account",
+  "currency": "MYR",
+  "timezone_name": "Asia/Kuala_Lumpur",
+  "campaigns": [
+    {
+      "campaign_id": "cmp_example_001",
+      "campaign_name": "Sample Community Awareness",
+      "objective": "OUTCOME_AWARENESS",
+      "status": "PAUSED",
+      "effective_status": "PAUSED",
+      "daily_budget": "0",
+      "lifetime_budget": "",
+      "start_time": "2026-07-12",
+      "stop_time": "",
+      "adsets": [
+        {
+          "adset_id": "adset_example_001",
+          "adset_name": "Malaysia broad interest dry run",
+          "optimization_goal": "REACH",
+          "billing_event": "IMPRESSIONS",
+          "status": "PAUSED",
+          "effective_status": "PAUSED",
+          "daily_budget": "0",
+          "target_region": "Malaysia",
+          "ads": [
+            {
+              "ad_id": "ad_example_001",
+              "ad_name": "Example Brand safe awareness draft",
+              "platform": "Facebook",
+              "placement": "Feed",
+              "status": "PAUSED",
+              "effective_status": "PAUSED",
+              "primary_text": "Explore weekly wellness community events with Example Brand.",
+              "headline": "Weekly wellness community event",
+              "description": "Example local account snapshot only.",
+              "CTA": "Learn More",
+              "landing_page": "https://example.com"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "insights": [
+    {
+      "date_start": "2026-07-12",
+      "date_stop": "2026-07-12",
+      "campaign_id": "cmp_example_001",
+      "campaign_name": "Sample Community Awareness",
+      "adset_id": "adset_example_001",
+      "adset_name": "Malaysia broad interest dry run",
+      "ad_id": "ad_example_001",
+      "ad_name": "Example Brand safe awareness draft",
+      "impressions": "0",
+      "reach": "0",
+      "clicks": "0",
+      "spend": "0.00",
+      "ctr": "0",
+      "cpc": "0",
+      "cpm": "0",
+      "frequency": "0",
+      "leads": "0",
+      "conversions": "0"
+    }
+  ]
+}

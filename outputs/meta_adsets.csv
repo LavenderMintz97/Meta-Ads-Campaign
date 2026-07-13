@@ -1,0 +1,2 @@
+account_id,campaign_id,adset_id,adset_name,optimization_goal,billing_event,status,effective_status,daily_budget,target_region,source,dry_run,review_notes
+act_EXAMPLE_DO_NOT_USE,cmp_example_001,adset_example_001,Malaysia broad interest dry run,REACH,IMPRESSIONS,PAUSED,PAUSED,0,Malaysia,local_example,true,Example data only. No Meta API request was made.
