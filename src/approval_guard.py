@@ -16,7 +16,7 @@ except ModuleNotFoundError:
 
 ALLOWED_RISK_LEVELS = {"LOW", "MEDIUM"}
 REQUIRED_COMPLIANCE_STATUS = "APPROVED_DRAFT"
-YES_VALUES = {"YES", "Y", "TRUE", "1"}
+REQUIRED_YES_VALUE = "YES"
 
 
 @dataclass
@@ -26,8 +26,8 @@ class ApprovalDecision:
 
 
 def is_yes(value: str) -> bool:
-    """Return True only for explicit yes-style approval values."""
-    return str(value).strip().upper() in YES_VALUES
+    """Return True only for the explicit approval value YES."""
+    return str(value).strip().upper() == REQUIRED_YES_VALUE
 
 
 def check_row_approval(row: dict[str, str], settings: Settings | None = None) -> ApprovalDecision:
