@@ -2,6 +2,15 @@
 
 A Codex-ready starter repo for creating **Facebook and Instagram content/ad draft automation**.
 
+## Start Here
+
+After cloning or opening this repo in Codex, read:
+
+1. `AGENTS.md` — project rules and safety guardrails
+2. `NEXT_STEPS.md` — exact execution roadmap after setup
+3. `.env.example` — local credential placeholders
+4. `prompts/` — prompt templates for draft generation and compliance review
+
 This project is designed to help with:
 
 - Facebook post drafts
@@ -29,12 +38,44 @@ Codex must not publish, launch, pause, delete, or change live campaigns unless y
 
 ---
 
+## Quick Next Step
+
+Run the local MVP first:
+
+```bash
+python src/meta_ads_mvp.py
+```
+
+Then follow the full roadmap in:
+
+```text
+NEXT_STEPS.md
+```
+
+The safest order is:
+
+```text
+1. Run local MVP
+2. Edit campaign brief
+3. Generate draft CSVs
+4. Review compliance CSV
+5. Create local .env
+6. Test Meta auth
+7. Pull read-only Meta reports
+8. Prepare approved_ads.csv
+9. Run dry-run upload preview
+10. Manually review before paused draft creation
+```
+
+---
+
 ## Folder Structure
 
 ```text
 Meta-Ads-Campaign/
   AGENTS.md
   README.md
+  NEXT_STEPS.md
   .env.example
   prompts/
     content-calendar.md
@@ -77,6 +118,7 @@ Meta-Ads-Campaign/
 | File | Purpose |
 |---|---|
 | `AGENTS.md` | Main Codex instruction file. Defines project rules, safety limits, and Meta-style policy guardrails. |
+| `NEXT_STEPS.md` | Step-by-step roadmap for what to run after setup. |
 | `prompts/content-calendar.md` | Prompt template for generating Facebook and Instagram content calendars. |
 | `prompts/facebook-ad-copy.md` | Prompt template for generating Facebook ad copy drafts. |
 | `prompts/instagram-caption.md` | Prompt template for generating Instagram captions. |
@@ -95,8 +137,8 @@ Meta-Ads-Campaign/
 | `src/export_csv.py` | Stable CSV schemas and export helper. |
 | `src/meta_auth_check.py` | Local-only Meta credential readiness check. |
 | `src/meta_campaign_reader.py` | Exports local example campaign/ad set/ad CSVs without API calls. |
-| `src/meta_client.py` | Dry-run Meta client placeholder that blocks write actions. |
-| `src/meta_draft_uploader.py` | Dry-run approval validation path; it does not upload ads. |
+| `src/meta_client.py` | Dry-run Meta client placeholder that blocks unsafe write actions. |
+| `src/meta_draft_uploader.py` | Dry-run approval validation path. |
 | `src/meta_insights_pull.py` | Exports local example insights without API calls. |
 | `src/meta_ads_mvp.py` | Safe Python MVP that generates draft CSVs and runs local compliance checks. |
 | `tests/test_compliance_check.py` | Focused tests for restricted categories, claims, and personal-attribute checks. |
@@ -177,30 +219,6 @@ outputs/compliance_review.csv
 
 `outputs/compliance_review.csv` is the reviewer checklist. It includes the issue category, risk level, recommended fix, and whether human review is required.
 
-All four output files include the core review/upload columns:
-
-```text
-campaign_name
-platform
-placement
-objective
-funnel_stage
-target_region
-audience_type
-primary_text
-caption
-headline
-description
-CTA
-creative_prompt
-landing_page
-compliance_status
-risk_level
-review_notes
-```
-
-The compliance report includes extra checklist columns such as `issue_category`, `recommended_fix`, `final_status`, and `human_review_required`.
-
 ### Run Tests
 
 Use the built-in unittest runner:
@@ -211,19 +229,13 @@ python -m unittest discover -s tests
 
 Run tests after changing compliance logic.
 
-### Beginner Notes
+---
 
-- Edit `data/campaign_brief.example.csv` or copy it to a new CSV file for a real campaign.
-- Keep `restricted_category_check=Yes` when the campaign may involve finance, health, supplements, politics, housing, jobs, dating, alcohol, gambling, or other sensitive categories.
-- Do not add tokens, app secrets, ad account IDs, or customer lists to the repo.
-- Treat `APPROVED_DRAFT` as "no local blocking issue found", not as permission to publish.
-- Final approval and any upload to Meta must stay manual in this MVP.
-
-### Meta Read-Only Reporting
+## Meta Read-Only Reporting
 
 The Meta reporting files support read-only pulls when `META_ACCESS_TOKEN` and `META_AD_ACCOUNT_ID` are configured in a local `.env` file. Credentials are read from `.env` only. If credentials are missing, reporting scripts fall back to `data/meta_account.example.json` so the example workflow still runs.
 
-These scripts use GET requests only. They do not create, edit, pause, delete, upload, or publish anything.
+These scripts should use GET requests only. They must not create, edit, pause, delete, upload, or publish anything.
 
 Create your local `.env` file:
 
@@ -239,7 +251,7 @@ AUTO_PUBLISH=false
 REQUIRE_HUMAN_APPROVAL=true
 META_ACCESS_TOKEN=your-read-token
 META_AD_ACCOUNT_ID=act_your_ad_account_id
-META_PAGE_ID=your_page_id_for_ad_creatives
+META_PAGE_ID=1281187981739289
 META_API_VERSION=v20.0
 META_INSIGHTS_DATE_PRESET=last_30d
 ```
@@ -251,13 +263,6 @@ Run local credential readiness checks:
 ```bash
 python src/meta_auth_check.py
 ```
-
-The auth check handles:
-
-- missing token or ad account
-- invalid ad account
-- expired or invalid token
-- permission errors
 
 Pull campaigns, ad sets, and ads into CSV files:
 
@@ -271,15 +276,13 @@ Pull ad-level spend, impressions, clicks, CTR, CPC, and leads:
 python src/meta_insights_pull.py
 ```
 
-The insights export includes spend, impressions, clicks, CTR, CPC, CPM, reach, frequency, leads, and conversions when Meta returns them.
-
 Validate approved ads without uploading:
 
 ```bash
 python src/meta_draft_uploader.py
 ```
 
-The uploader reads `data/approved_ads.csv`. With `DRY_RUN=true`, it only prints the payloads and writes:
+With `DRY_RUN=true`, the uploader only prints payloads and writes:
 
 ```text
 outputs/meta_upload_preview.csv
@@ -295,95 +298,36 @@ human_approval=YES
 landing_page_checked=YES
 ```
 
-`DRY_RUN=false` is only allowed when it is explicitly changed in `.env`. Even then, this MVP still does not publish or upload live ads.
-
-When `DRY_RUN=false`, the uploader can only create draft objects in `PAUSED` status:
-
-```text
-Campaign -> PAUSED
-Ad Set -> PAUSED
-Ad Creative -> created for the paused ad
-Ad -> PAUSED
-```
-
-It does not build automatic publishing. `outputs/meta_upload_log.csv` includes rollback notes so any created paused draft objects can be reviewed and manually deleted in Meta Ads Manager if needed.
-
-Read-only reporting settings:
-
-```text
-META_ACCESS_TOKEN=
-META_AD_ACCOUNT_ID=
-META_API_VERSION=v20.0
-META_INSIGHTS_DATE_PRESET=last_30d
-```
+`DRY_RUN=false` is only allowed after deliberate manual setup. Even then, the workflow must not auto-publish live ads.
 
 ---
 
-## Recommended Codex First Prompt
+## Recommended Codex Prompt
 
 Paste this into Codex after opening this repo:
 
 ```text
-Read AGENTS.md and all files inside /prompts.
+Read AGENTS.md, README.md, NEXT_STEPS.md, .env.example, and all files in /prompts and /src.
 
-Build a safe MVP for Facebook and Instagram content/ad draft automation.
+Continue the Meta Ads automation project safely.
 
-Requirements:
-1. Read data/campaign_brief.example.csv.
-2. Generate Facebook ad drafts.
-3. Generate Instagram caption drafts.
-4. Generate a 14-day content calendar.
-5. Run compliance-review.md logic against every draft.
-6. Export outputs to CSV files inside /outputs.
-7. Use DRY_RUN=true by default.
-8. Do not publish live ads.
-9. Do not call Meta Ads API write actions.
-10. Require human approval before anything is marked as approved.
+Your task:
+1. Verify the local MVP can run with python src/meta_ads_mvp.py.
+2. Verify compliance_review.csv is created.
+3. Verify src/approval_guard.py blocks unsafe rows.
+4. Verify Meta read-only scripts use GET only.
+5. Verify src/meta_draft_uploader.py stays in DRY_RUN=true by default.
+6. Add or improve tests for approval_guard.py and meta_client.py.
+7. Do not publish live ads.
+8. Do not create ACTIVE campaigns.
+9. Do not expose credentials.
+10. Update README only if instructions are missing or unclear.
 
-Preferred stack: Python.
-Add clear setup instructions and beginner-friendly comments.
-```
-
----
-
-## Suggested MVP Output Files
-
-When Codex builds the first version, ask it to create:
-
-```text
-outputs/content_calendar.csv
-outputs/facebook_ad_drafts.csv
-outputs/instagram_caption_drafts.csv
-outputs/compliance_review.csv
-```
-
-Each output should include:
-
-- campaign_name
-- platform
-- placement
-- objective
-- funnel_stage
-- target_region
-- audience_type
-- primary_text or caption
-- headline
-- description
-- CTA
-- creative_prompt
-- landing_page
-- compliance_status
-- risk_level
-- review_notes
-
----
-
-## Recommended CSV Input Columns
-
-The example campaign brief contains these columns:
-
-```text
-campaign_name,brand_name,business_type,product_or_service,target_region,target_audience_context,campaign_objective,funnel_stage,offer,landing_page,tone_of_voice,proof_points,disclaimers,restricted_category_check,forbidden_words,desired_cta
+After changes, summarize:
+- what was changed
+- what command to run
+- what files are generated
+- what still requires manual review
 ```
 
 ---
@@ -393,7 +337,7 @@ campaign_name,brand_name,business_type,product_or_service,target_region,target_a
 Use this workflow first:
 
 ```text
-Campaign Brief -> Codex Draft Generation -> Compliance Review -> Human Review -> Approved CSV -> Manual Upload
+Campaign Brief -> Codex Draft Generation -> Compliance Review -> Human Review -> Approved CSV -> Dry-Run Preview -> Manual Review
 ```
 
 Do not start with:
@@ -417,21 +361,6 @@ After the safe MVP works, Codex can help add:
 - Landing page checklist
 - Compliance rule tests
 - Dashboard view
-- Optional Meta API draft campaign preparation
+- Optional Meta API paused draft campaign preparation
 
 Keep publishing manual until the review workflow is strong.
-
----
-
-## Notes for Vanessa
-
-This repo is a good portfolio project because it combines:
-
-- SEO/content strategy
-- Meta ads planning
-- compliance thinking
-- AI workflow design
-- beginner-friendly automation
-- CSV/reporting logic
-
-Start with the content + ad drafting MVP first. Then improve reporting and workflow automation later.
