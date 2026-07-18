@@ -30,6 +30,8 @@ REQUIRE_HUMAN_APPROVAL=true
 
 Do not change these until the read-only sync, approval guard, and dry-run preview are tested.
 
+If Meta still returns `read_check_status: failed`, read `META_API_TROUBLESHOOTING.md`. Do not let a Meta permission issue block the safe local drafting workflow.
+
 ---
 
 ## Phase 1: Run the Safe Local MVP
@@ -203,10 +205,12 @@ Possible results:
 | Success | Token and ad account can be read | Continue to Phase 6 |
 | Missing token | `.env` is incomplete | Add local credentials |
 | Expired token | Token no longer works | Generate a new token |
-| Permission error | Token lacks required access | Check Meta Developer permissions |
+| Permission error | Meta rejected the ad account read request | Read `META_API_TROUBLESHOOTING.md` |
 | Invalid ad account | Wrong `act_...` ID or no access | Confirm Ads Manager account ID |
 
-Do not continue to upload-like steps until this passes.
+Important: a brand-new ad account with no campaigns should return `data: []`. That is success. A `#200` or `403 Forbidden` response is a permission/asset assignment issue, not an empty-campaign issue.
+
+Do not continue to real upload-like steps until this passes. You may still continue the local draft-generation workflow because it does not call Meta.
 
 ---
 
@@ -245,6 +249,8 @@ Success condition:
 - Campaign/ad/ad set data can be exported.
 - Insights data can be exported.
 - No campaign, ad set, ad, budget, status, or creative is changed.
+
+If this fails because the Meta ad account has no campaign access yet, pause this phase and continue with local draft generation only.
 
 ---
 
@@ -391,7 +397,7 @@ Only publish manually when you are confident.
 Use this prompt in Codex:
 
 ```text
-Read AGENTS.md, README.md, NEXT_STEPS.md, .env.example, and all files in /prompts and /src.
+Read AGENTS.md, README.md, NEXT_STEPS.md, META_API_TROUBLESHOOTING.md, .env.example, and all files in /prompts and /src.
 
 Continue the Meta Ads automation project safely.
 
@@ -407,6 +413,8 @@ Your task:
 9. Do not expose credentials.
 10. Update README only if instructions are missing or unclear.
 
+If Meta returns read_check_status: failed, do not keep regenerating tokens blindly. Follow META_API_TROUBLESHOOTING.md and continue local draft generation while Meta asset access is being resolved.
+
 After changes, summarize:
 - what was changed
 - what command to run
@@ -419,7 +427,7 @@ After changes, summarize:
 ## Recommended Claude Code Prompt
 
 ```text
-Read CLAUDE.md if available, then read AGENTS.md, README.md, NEXT_STEPS.md, and /src.
+Read CLAUDE.md if available, then read AGENTS.md, README.md, NEXT_STEPS.md, META_API_TROUBLESHOOTING.md, and /src.
 
 Audit this repo for Meta Ads automation safety.
 
@@ -450,10 +458,11 @@ Use this order:
 4. Review compliance CSV
 5. Create local .env
 6. Test auth
-7. Pull read-only Meta reports
-8. Prepare approved_ads.csv
-9. Run dry-run upload preview
-10. Manually review before any paused draft creation
+7. If auth/read check fails, follow META_API_TROUBLESHOOTING.md
+8. Pull read-only Meta reports only after read check passes
+9. Prepare approved_ads.csv
+10. Run dry-run upload preview
+11. Manually review before any paused draft creation
 ```
 
 This is the safest path from Codex drafting to Meta Ads Manager automation.
