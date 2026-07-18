@@ -1,7 +1,7 @@
 import tempfile
 import unittest
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import call, patch
 
 from src.approval_guard import check_row_approval
 from src.config import Settings, load_settings, parse_dotenv
@@ -234,6 +234,28 @@ class MetaSafeScaffoldTests(unittest.TestCase):
             self.assertEqual(settings.meta_ad_account_id, "123")
             self.assertTrue(settings.meta_credentials_present)
 
+    def test_load_settings_reads_meta_page_id_from_dotenv(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            dotenv_path = Path(temp_dir) / ".env"
+            dotenv_path.write_text(
+                "META_PAGE_ID=1368853385186271\nDRY_RUN=true\n",
+                encoding="utf-8",
+            )
+
+            settings = load_settings(dotenv_path)
+
+            self.assertEqual(settings.meta_page_id, "1368853385186271")
+            self.assertTrue(settings.dry_run)
+
+    def test_env_example_keeps_meta_page_id_placeholder_only(self):
+        env_example = Path(__file__).resolve().parents[1] / ".env.example"
+        content = env_example.read_text(encoding="utf-8")
+
+        self.assertIn("META_PAGE_ID=\n", content)
+        self.assertIn("META_ACCESS_TOKEN=\n", content)
+        self.assertNotIn("1368853385186271", content)
+        self.assertNotIn("META_ACCESS_TOKEN=EA", content)
+
     def test_auth_check_reports_missing_dotenv_credentials(self):
         with tempfile.TemporaryDirectory() as temp_dir:
             dotenv_path = Path(temp_dir) / ".env"
@@ -241,7 +263,54 @@ class MetaSafeScaffoldTests(unittest.TestCase):
                 result = run_auth_check()
 
         self.assertEqual(result["read_check_status"], "skipped")
+        self.assertEqual(result["meta_page_id_present"], "false")
         self.assertIn("Missing credentials", result["message"])
+
+    def test_auth_check_reports_page_id_without_api_when_credentials_missing(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            dotenv_path = Path(temp_dir) / ".env"
+            dotenv_path.write_text(
+                "META_PAGE_ID=1368853385186271\nDRY_RUN=true\n",
+                encoding="utf-8",
+            )
+            with patch("src.config.DOTENV_PATH", dotenv_path):
+                result = run_auth_check()
+
+        self.assertEqual(result["read_check_status"], "skipped")
+        self.assertEqual(result["page_check_status"], "skipped")
+        self.assertEqual(result["meta_page_id_present"], "true")
+        self.assertEqual(result["meta_ad_account_id_present"], "false")
+        self.assertIn("Missing credentials", result["message"])
+
+    def test_auth_check_runs_read_only_page_check_when_page_id_is_configured(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            dotenv_path = Path(temp_dir) / ".env"
+            dotenv_path.write_text(
+                "META_ACCESS_TOKEN=test-token\n"
+                "META_AD_ACCOUNT_ID=act_123\n"
+                "META_PAGE_ID=1368853385186271\n"
+                "DRY_RUN=true\n",
+                encoding="utf-8",
+            )
+            with patch("src.config.DOTENV_PATH", dotenv_path), patch("src.meta_auth_check.MetaClient.get") as get:
+                get.side_effect = [
+                    {"id": "user_1", "name": "Test User"},
+                    {"id": "act_123", "name": "Test Account"},
+                    {"id": "1368853385186271", "name": "Glow Grow Studio"},
+                ]
+                result = run_auth_check()
+
+        self.assertEqual(result["read_check_status"], "passed")
+        self.assertEqual(result["page_check_status"], "passed")
+        self.assertEqual(result["meta_page_id_present"], "true")
+        self.assertEqual(result["meta_page_read_id_present"], "true")
+        get.assert_has_calls(
+            [
+                call("/me", {"fields": "id,name"}),
+                call("/act_123", {"fields": "id,account_id,name,account_status"}),
+                call("/1368853385186271", {"fields": "id,name"}),
+            ]
+        )
 
     def test_meta_error_classifies_expired_token(self):
         error = classify_meta_error(400, '{"error":{"message":"Session has expired","code":190}}')

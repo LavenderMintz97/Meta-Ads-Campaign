@@ -5,8 +5,8 @@ This guide explains how to connect the project workflow to your Meta Page and Ad
 Use this guide for:
 
 ```text
-Page name: Founders Club Community
-Meta Page ID: 1281187981739289
+Page name: Glow Grow Studio
+Meta Page ID: 1368853385186271
 Website: https://glow-grow-studio.pages.dev/
 ```
 
@@ -26,9 +26,9 @@ REQUIRE_HUMAN_APPROVAL=true
 
 In Facebook / Meta Business Suite, confirm:
 
-- You can switch into the Page profile: `Founders Club Community`.
+- You can switch into the Page profile: `Glow Grow Studio`.
 - You have full Facebook access or task access for the Page.
-- The Page ID is correct: `1281187981739289`.
+- The Page ID is correct: `1368853385186271`.
 - The Page is connected to the right Business Portfolio, if you use Business Manager.
 - The Page can access the correct Ad Account.
 
@@ -59,7 +59,7 @@ Instagram profile
 -> Edit profile
 -> Public business information
 -> Page
--> Connect or choose Founders Club Community
+-> Connect or choose Glow Grow Studio
 ```
 
 Use a professional Instagram account, not a private personal account.
@@ -114,7 +114,7 @@ REQUIRE_HUMAN_APPROVAL=true
 
 META_ACCESS_TOKEN=your_meta_access_token
 META_AD_ACCOUNT_ID=act_your_ad_account_id
-META_PAGE_ID=1281187981739289
+META_PAGE_ID=1368853385186271
 META_API_VERSION=v20.0
 META_INSIGHTS_DATE_PRESET=last_30d
 ```
@@ -136,12 +136,21 @@ Run:
 python src/meta_auth_check.py
 ```
 
-The script should confirm whether your token and ad account can be read.
-
-Expected safe result:
+The script reports whether these local settings are configured:
 
 ```text
-Meta credential readiness check passed.
+META_ACCESS_TOKEN
+META_AD_ACCOUNT_ID
+META_PAGE_ID
+```
+
+When token, ad account, and Page ID are present, the script performs read-only Graph API checks for `/me`, the ad account, and the Page. It does not create, edit, pause, delete, upload, or publish anything.
+
+Expected safe result when everything is configured and readable:
+
+```text
+read_check_status: passed
+page_check_status: passed
 ```
 
 If it fails, fix the Meta setup first:
@@ -190,7 +199,7 @@ This confirms the project can read from Meta without creating or editing anythin
 
 ---
 
-## 7. Generate Founders Club ad drafts locally
+## 7. Generate Glow Grow Studio ad drafts locally
 
 Edit or create:
 
@@ -202,7 +211,7 @@ Suggested safe campaign brief:
 
 ```csv
 campaign_name,brand_name,business_type,product_or_service,target_region,target_audience_context,campaign_objective,funnel_stage,offer,landing_page,tone_of_voice,proof_points,disclaimers,restricted_category_check,forbidden_words,desired_cta
-Founders Club Community Launch,Founders Club Community,Wellness and community events,"Badminton, HIIT, wellness check-ins, and community sessions",Malaysia / Penang,"People interested in social wellness, community activities, badminton, and beginner-friendly fitness",Messages,Awareness,Join the next community session,https://glow-grow-studio.pages.dev/,Warm friendly encouraging community-first,"Weekly movement sessions, friendly community, beginner-friendly environment",No medical or fitness result guarantees,No,"guaranteed, instant transformation, cure, lose weight fast",Send Message
+Glow Grow Studio Community Launch,Glow Grow Studio,Wellness and community events,"Badminton, HIIT, wellness check-ins, and community sessions",Malaysia / Penang,"People interested in social wellness, community activities, badminton, and beginner-friendly fitness",Messages,Awareness,Join the next community session,https://glow-grow-studio.pages.dev/,Warm friendly encouraging community-first,"Weekly movement sessions, friendly community, beginner-friendly environment",No medical or fitness result guarantees,No,"guaranteed, instant transformation, cure, lose weight fast",Send Message
 ```
 
 Then run:
@@ -301,7 +310,7 @@ The first real Meta write should create **paused drafts only**, then you manuall
 
 Before publishing anything, manually check:
 
-- Page identity: Founders Club Community
+- Page identity: Glow Grow Studio
 - Instagram account connection
 - Campaign objective
 - Ad account
@@ -327,11 +336,11 @@ Use this in Codex after merging this guide:
 ```text
 Read AGENTS.md, README.md, NEXT_STEPS.md, META_PAGE_INTEGRATION.md, .env.example, and /src.
 
-Help me verify the Founders Club Community Meta Page integration safely.
+Help me verify the Glow Grow Studio Meta Page integration safely.
 
 Context:
-- Meta Page ID: 1281187981739289
-- Page name: Founders Club Community
+- Meta Page ID: 1368853385186271
+- Page name: Glow Grow Studio
 - Website: https://glow-grow-studio.pages.dev/
 
 Tasks:
@@ -357,10 +366,10 @@ After changes, summarize what command to run and what files are generated.
 1. Confirm Page access manually
 2. Connect Instagram professional account to the Page
 3. Confirm Ad Account access and payment method
-4. Create local .env with META_PAGE_ID=1281187981739289
+4. Create local .env with META_PAGE_ID=1368853385186271
 5. Run python src/meta_auth_check.py
 6. Run read-only reporting scripts
-7. Generate Founders Club draft ads locally
+7. Generate Glow Grow Studio draft ads locally
 8. Review compliance CSV
 9. Prepare approved_ads.csv manually
 10. Run DRY_RUN upload preview
